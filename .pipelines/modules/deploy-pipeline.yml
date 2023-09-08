@@ -11,18 +11,18 @@ variables:
 
 stages:
   - stage: Deploy_IaC_Registry
-    displayName: Deploy Infrastructure as Code Registry
+    displayName: Deploy Certified Function
     jobs:
       - deployment: Deployment_Modules
-        displayName: Deploy Bicep registry
-        environment: "Bicep Registry"
+        displayName: Deploy Azure Certified Function
+        environment: "Azure Function"
         strategy:
           runOnce:
             deploy:
               steps:
                 - checkout: self
                   clean: true
-                - script: bicep build-params 'templatespec/certifiedfunction/certifiedfunction-param.bicepparam'
+                - script: bicep build-params 'templatespecs/certifiedfunction/certifiedfunction-param.bicepparam'
                   displayName: Convert Bicep Params file
                 - task: AzureResourceManagerTemplateDeployment@3
                   displayName: 'Infrastructure - Deploy'
@@ -32,7 +32,7 @@ stages:
                     subscriptionId: '$(subscriptionId)'
                     resourceGroupName: 'sponsor-rg-testing'
                     location: 'West Europe'
-                    templateLocation: 'templatespec/certifiedfunction/certifiedfunction.bicep'
-                    csmFile: 'templatespec/certifiedfunction/certifiedfunction.bicep'
+                    templateLocation: 'templatespecs/certifiedfunction/certifiedfunction.bicep'
+                    csmFile: 'templatespecs/certifiedfunction/certifiedfunction.bicep'
                     csmParametersFile: 'templatespec/certifiedfunction/certifiedfunction-param.json'
                     deploymentMode: 'Incremental'
