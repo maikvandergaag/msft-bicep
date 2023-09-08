@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: bicepbuild
-        uses: ./.github/actions/buildbicep
+        uses: .github/actions/buildbicep
         with:
           specFolder: ${{env.specfolder}}
           specName: ${{env.specName}}
@@ -34,10 +34,13 @@ jobs:
     steps:
        - uses: actions/checkout@v2
        - id: deployspec
-         uses: ./.github/actions/deploytemplatespec
+         uses: .github/actions/deploytemplatespec
          with:
            specFolder: ${{env.specfolder}}
            specName: ${{env.specName}}
            resourceGroup: ${{env.resourcegroup}}
            specFileName : ${{env.specfilename}}
+           clientId: ${{ secrets.AZURE_CLIENT_ID }}
+           clientSecret: ${{ secrets.AZURE_CLIENT_SECRET }}
+           tenantId: ${{ secrets.AZURE_TENANT_ID }}
            azureSubscription: 5b389701-0e47-4738-b4fe-ddb67ac3a036

@@ -1,6 +1,15 @@
 name: "Deploy Template Spec"
 description: "Composite actions for deploying a template spec."
 inputs:
+  clientId:
+    description: 'Application client ID'
+    required: true
+  clientSecret:
+    description: 'Application client Secret'
+    required: true
+  tenantId:
+    description: 'Application tenant Id'
+    required: true
   azureSubscription:
     description: 'Subscription'
     required: true
@@ -30,7 +39,7 @@ runs:
        - name: Azure Login
          uses: Azure/login@v1
          with:
-           creds: ${{ secrets.AZURE_CREDENTIALS }}
+           creds: '{"clientId":"${{ inputs.clientId }}","clientSecret":"${{ inputs.clientSecret }}","subscriptionId":"${{ inputs.azureSubscription }}","tenantId":"${{ inputs.tenantId }}"}'
            enable-AzPSSession: true
        - name: Check versionnumber
          uses: azure/powershell@v1
