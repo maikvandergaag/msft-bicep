@@ -27,9 +27,11 @@ stages:
           inputs:
             deploymentScope: 'Resource Group'
             azureResourceManagerConnection: '$(serviceconnection-sub)'
+            subscriptionId: '$(subscription-sub)'
+            action: 'Create Or Update Resource Group'
             resourceGroupName: 'sponsor-rg-testing'
             location: 'West Europe'
             templateLocation: 'Linked artifact'
             csmFile: '$(System.DefaultWorkingDirectory)/templatespecs/certifiedfunction/certifiedfunction.json'
-            csmParametersFile: '$(System.DefaultWorkingDirectory)/templatespec/certifiedfunction/certifiedfunction-param.json'
+            csmParametersFile: '$(System.DefaultWorkingDirectory)/templatespecs/certifiedfunction/certifiedfunction-param.json'
             deploymentMode: 'Incremental'
