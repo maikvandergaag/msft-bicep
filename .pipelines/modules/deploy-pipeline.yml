@@ -16,8 +16,15 @@ stages:
               steps:
                 - checkout: self
                   clean: true
-                - script: bicep build-params 'templatespecs/certifiedfunction/certifiedfunction-param.bicepparam'
-                  displayName: Convert Bicep Params file
+                - task: AzureCLI@2
+                  displayName: 'Build Bicep file'
+                  inputs:
+                    azureSubscription: '$(serviceconnection-sub)'
+                    scriptType: 'pscore'
+                    scriptLocation: 'inlineScript'
+                    inlineScript: |
+                      az bicep build --file 'templatespecs/certifiedfunction/certifiedfunction.bicep'
+                      az bicep build-params 'templatespecs/certifiedfunction/certifiedfunction-param.bicepparam'
                 - task: AzureResourceManagerTemplateDeployment@3
                   displayName: 'Infrastructure - Deploy'
                   inputs:
