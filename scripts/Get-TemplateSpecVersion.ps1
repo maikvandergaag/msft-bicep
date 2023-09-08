@@ -53,6 +53,6 @@ process {
         Write-Host "##vso[task.setvariable variable=versionnumber]$versionNumber"
     }
     else {
-        echo "::set-output name=versionnumber::$versionNumber"
+        echo "versionnumber=$versionNumber" >> $GITHUB_OUTPUT
     }
 }
