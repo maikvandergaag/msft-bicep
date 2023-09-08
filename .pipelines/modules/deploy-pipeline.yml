@@ -25,15 +25,12 @@ stages:
                 - task: AzureResourceManagerTemplateDeployment@3
                   displayName: 'Infrastructure - Deploy'
                   inputs:
-                    deploymentScope: 'Subscription'
-                    azureResourceManagerConnection: '$(serviceconnection)'
+                    deploymentScope: 'Resource Group'
+                    azureResourceManagerConnection: '$(serviceconnection-sub)'
                     subscriptionId: '$(subscriptionId)'
+                    resourceGroupName: 'sponsor-rg-testing'
                     location: 'West Europe'
                     templateLocation: 'templatespec/certifiedfunction/certifiedfunction.bicep'
-                    csmFile: '${{ parameters.templatefile }}'
-                    csmParametersFile: '${{ parameters.parametersfile }}.json'
+                    csmFile: 'templatespec/certifiedfunction/certifiedfunction.bicep'
+                    csmParametersFile: 'templatespec/certifiedfunction/certifiedfunction.bicepparam'
                     deploymentMode: 'Incremental'
-                - template: templates/deploy-infrastructure.yml
-                  parameters:
-                    azureServiceConnection: '$(serviceconnection)'
-                    subscriptionId: '$(subscriptionId)'
