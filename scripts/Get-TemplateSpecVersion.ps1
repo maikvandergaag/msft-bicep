@@ -25,7 +25,8 @@ Param
     [Parameter(Mandatory = $true)]
     [String]$TemplateSpecName,
     [Parameter(Mandatory = $true)]
-    [String]$ResourceGroupName
+    [String]$ResourceGroupName,
+    [Switch]$ADO
 )
 
 process {
@@ -47,6 +48,11 @@ process {
         $versionNumber = "0.1"
     }
 
-    Write-Host "New versionnumber will be: $($versionNumber)"
-    Write-Host "##vso[task.setvariable variable=versionnumber]$versionNumber"
+    Write-Output "New versionnumber will be: $($versionNumber)"
+    if ($ADO) {
+        Write-Host "##vso[task.setvariable variable=versionnumber]$versionNumber"
+    }
+    else {
+        echo "::set-output name=versionnumber::$versionNumber"
+    }
 }

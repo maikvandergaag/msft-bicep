@@ -32,4 +32,4 @@ runs:
       uses: actions/upload-artifact@v2
       with:
         name: ps-${{inputs.specName}}
-        path: ./utilities/*.ps1
+        path: ./scripts/*.ps1
