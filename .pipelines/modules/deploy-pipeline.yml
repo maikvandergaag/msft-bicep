@@ -1,9 +1,3 @@
-resources:
- pipelines:
-  - pipeline: 'solution-build'
-    source: 'BR - Build - Bicep Registry'
-    trigger: true
-
 trigger: none
 
 variables:
