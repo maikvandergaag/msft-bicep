@@ -1,0 +1,26 @@
+resources:
+ pipelines:
+  - pipeline: 'solution-build'
+    source: 'BR - Build - Bicep Registry'
+    trigger: true
+
+trigger: none
+
+variables:
+- group: 'deployment-variables'
+
+stages:
+  - stage: Deploy_IaC_Registry
+    displayName: Deploy Infrastructure as Code Registry
+    jobs:
+      - deployment: Deployment_Modules
+        displayName: Deploy Bicep registry
+        environment: "Bicep Registry"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates/deploy-infrastructure.yml
+                  parameters:
+                    azureServiceConnection: '$(serviceconnection)'
+                    subscriptionId: '$(subscriptionId)'

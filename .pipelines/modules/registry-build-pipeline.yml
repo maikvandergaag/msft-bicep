@@ -1,0 +1,18 @@
+trigger:
+  paths:
+    exclude:
+      - pipelines
+    include:
+      - bicep/registry
+      - modules/contrainerregistry
+
+stages:
+  - template: templates/infrastructure.yml
+    parameters:
+      build: true
+      documentation: false
+      buildScripts: true
+      buildInfrastructure: true
+      analyse: true
+      modulesPath: '$(System.DefaultWorkingDirectory)/modules/'
+      iacpathInfrastructure: '$(System.DefaultWorkingDirectory)/bicep/'

@@ -1,0 +1,28 @@
+parameters:
+  - name: iacPath
+    type: string
+    default: '$(System.DefaultWorkingDirectory)/modules/'
+  - name: iacArtifactName
+    type: string
+    default: 'iacpackage'
+
+steps:
+  - task: RunARMTTKTestsXPlat@1
+    displayName: "IAC: ARM TTK"
+    inputs:
+      templatelocation: '${{ parameters.iacPath }}'
+      resultLocation: '$(System.DefaultWorkingDirectory)/results'
+      cliOutputResults: true
+  - task: PublishTestResults@2
+    displayName: 'IAC: Publish test results'
+    inputs:
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: true
+      testResultsFiles: '$(System.DefaultWorkingDirectory)/results/*-armttk.xml'
+    condition: 'always()'
+  - task: PublishBuildArtifacts@1
+    displayName: 'IAC: Publish IaC Artifact'
+    inputs:
+      PathtoPublish: "${{ parameters.iacPath }}"
+      ArtifactName: "${{ parameters.iacArtifactName }}"
+      publishLocation: "Container"

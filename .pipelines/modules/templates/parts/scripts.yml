@@ -1,0 +1,15 @@
+parameters:
+  - name: scriptsPath
+    type: string
+    default: '$(System.DefaultWorkingDirectory)/scripts/'
+  - name: scriptsArtifactName
+    type: string
+    default: 'scripts'
+
+steps:
+  - task: PublishBuildArtifacts@1
+    displayName: 'Scripts: Publish Scripts Artifact'
+    inputs:
+      PathtoPublish: "${{ parameters.scriptsPath }}"
+      ArtifactName: "${{ parameters.scriptsArtifactName }}"
+      publishLocation: "Container"

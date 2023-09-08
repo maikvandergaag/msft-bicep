@@ -1,0 +1,19 @@
+trigger:
+  paths:
+    exclude:
+      - pipelines
+    include:
+      - modules
+      - scripts
+
+variables:
+- group: 'bicep-docs'
+
+stages:
+  - template: templates/infrastructure.yml
+    parameters:
+      build: true
+      documentation: true
+      buildScripts: true
+      analyse: true
+      buildInfrastructure: false

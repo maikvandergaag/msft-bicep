@@ -1,0 +1,23 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: 'deployment-variables'
+  - name: bicepPath
+    value: "$(Build.Repository.LocalPath)/templatespecs/certifiedstorage"
+  - name: fileName
+    value: "certifiedstorage"
+  - name: specName
+    value: "az-tempspec-certifiedstorage"
+
+extends:
+  template: templates/stages-specs.yml
+  parameters:
+    bicepPath: '$(bicepPath)'
+    fileName: '$(fileName)'
+    serviceConnection: '$(serviceconnection)'
+    specName: '$(specName)'
+    resourceGroup: '$(resourceGroup)'
+    subscription: '$(subscriptionId)'

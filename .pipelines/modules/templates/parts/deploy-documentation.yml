@@ -1,0 +1,30 @@
+parameters:
+  - name: pipelineartifact
+    type: string
+    default: 'solution-build'
+  - name: artifactName
+    type: string
+    default: 'wikiDocs'
+  - name: scriptArtifactName
+    type: string
+    default: 'scripts'
+  - name: wikiUri
+    type: string
+  - name: wikiPath
+    type: string
+
+steps:
+  - download: ${{ parameters.pipelineartifact }}
+    displayName: 'Documentation - Download documentation'
+    artifact: ${{ parameters.artifactName }}
+  - download: ${{ parameters.pipelineartifact }}
+    displayName: 'Documentation - Download scripts'
+    artifact: ${{ parameters.scriptArtifactName }}
+  - task: PowerShell@2
+    displayName: 'Upload Wiki Documentation'
+    inputs:
+      filePath: '$(Pipeline.Workspace)/${{ parameters.pipelineartifact }}/${{ parameters.scriptArtifactName }}/New-WikiPages.ps1'
+      arguments: '-WikiUri "${{ parameters.wikiUri }}" -SystemAccessToken 1 -MarkDownFolder "$(Pipeline.Workspace)/${{ parameters.pipelineartifact }}/${{ parameters.artifactName }}/" -ParentPage "Modules.md" -Path "${{ parameters.wikiPath }}"'
+      pwsh: true
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)

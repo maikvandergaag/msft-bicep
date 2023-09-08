@@ -1,0 +1,90 @@
+parameters:
+  - name: modulesPath
+    type: string
+    default: '$(System.DefaultWorkingDirectory)/modules/'
+  - name: iacArtifactName
+    type: string
+    default: 'modules'
+  - name: iacArtifactNameInfrastructure
+    type: string
+    default: 'iacpackageinfrastructure'
+  - name: iacPathInfrastructure
+    type: string
+    default: '$(System.DefaultWorkingDirectory)/bicep'
+  - name: scriptsPath
+    type: string
+    default: '$(System.DefaultWorkingDirectory)/scripts/'
+  - name: scriptsArtifactName
+    type: string
+    default: 'scripts'
+  - name: analyse
+    type: boolean
+    default: true
+  - name: build
+    type: boolean
+    default: true
+  - name: documentation
+    type: boolean
+    default: true
+  - name: buildScripts
+    type: boolean
+    default: true
+  - name: buildInfrastructure
+    type: boolean
+    default: true
+
+stages:
+  - stage: Build
+    displayName: Build
+    jobs:
+      - job: Analyse_Bicep
+        displayName: Analyse Bicep
+        dependsOn: Build_IaC
+        condition: eq('${{ parameters.analyse }}', true)
+        workspace:
+          clean: all
+        continueOnError: false
+        steps:
+          - template: parts/codeanalysis.yml
+      - job: Build_IaC
+        displayName: Build / Analyse Modules
+        condition: eq('${{ parameters.build }}', true)
+        workspace:
+          clean: all
+        continueOnError: false
+        steps:
+          - template: parts/iac-scan.yml
+            parameters:
+              iacPath: '${{ parameters.modulesPath }}'
+              iacArtifactName: '${{ parameters.iacArtifactName }}'
+      - job: Build_IaC_Infrastructure
+        displayName: Build / Analyse Infrastructure
+        condition: eq('${{ parameters.buildInfrastructure }}', true)
+        workspace:
+          clean: all
+        continueOnError: false
+        steps:
+          - template: parts/iac-scan.yml
+            parameters:
+              iacpath: '${{ parameters.iacPathInfrastructure }}'
+              iacArtifactName: '${{ parameters.iacArtifactNameInfrastructure }}'
+      - job: Documentation_Generation
+        displayName: Documentation Generation
+        condition: eq('${{ parameters.documentation }}', true)
+        dependsOn: Build_IaC
+        workspace:
+          clean: all
+        continueOnError: false
+        steps:
+          - template: parts/new-documentation.yml
+      - job: Build_Script
+        displayName: Build / Analyse Script
+        condition: eq('${{ parameters.buildScripts }}', true)
+        workspace:
+          clean: all
+        continueOnError: false
+        steps:
+          - template: parts/scripts.yml
+            parameters:
+              scriptsPath: '${{ parameters.scriptsPath }}'
+              scriptsArtifactName: '${{ parameters.scriptsArtifactName }}'

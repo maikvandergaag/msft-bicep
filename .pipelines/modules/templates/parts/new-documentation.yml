@@ -1,0 +1,19 @@
+parameters:
+  - name: modulesFolder
+    type: string
+    default: '$(System.DefaultWorkingDirectory)/modules'
+
+steps:
+  - task: PowerShell@2
+    displayName: 'Generate Bicep module documentation'
+    inputs:
+      filePath: '$(System.DefaultWorkingDirectory)/scripts/New-BicepDocs.ps1'
+      arguments: '-TemplateFolder "${{ parameters.modulesFolder }}" -OutputFolder "$(System.DefaultWorkingDirectory)/TempDocs/" -IndexFileName "Modules"'
+      pwsh: true
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish documentation'      
+    condition: always()
+    inputs:
+      PathtoPublish: '$(System.DefaultWorkingDirectory)/TempDocs/'
+      ArtifactName: 'wikiDocs'
+      publishLocation: 'Container'

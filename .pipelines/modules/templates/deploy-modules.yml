@@ -1,0 +1,30 @@
+parameters:
+  - name: azureServiceConnection
+    type: string
+  - name: registry
+    type: string 
+  - name: pipelineartifact
+    type: string
+    default: 'solution-build'
+  - name: artifactName
+    type: string
+    default: 'modules'
+  - name: scriptArtifactName
+    type: string
+    default: 'scripts'
+
+steps:
+  - download: ${{ parameters.pipelineartifact }}
+    displayName: 'Infrastructure - Download artifact'
+    artifact: ${{ parameters.artifactName }}
+  - download: ${{ parameters.pipelineartifact }}
+    displayName: 'Infrastructure - Download script artifact'
+    artifact: ${{ parameters.scriptArtifactName }}
+  - task: AzureCLI@2
+    displayName: 'Deploy Bicep modules to repository'
+    inputs:
+      azureSubscription: '${{ parameters.azureServiceConnection }}'
+      scriptType: 'pscore'
+      scriptLocation: 'scriptPath'
+      scriptPath: '$(Pipeline.Workspace)/${{ parameters.pipelineartifact }}/${{ parameters.scriptArtifactName }}/New-BicepModule.ps1'
+      arguments: '-Path "$(Pipeline.Workspace)/${{ parameters.pipelineartifact }}/${{ parameters.artifactName }}/" -Registry ${{ parameters.registry }}'

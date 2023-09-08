@@ -1,0 +1,37 @@
+parameters:
+  - name : fileName
+    default: ''
+  - name: serviceConnection
+    default: ''
+  - name: specName
+    default: ''
+  - name: resourceGroup
+    default: ''
+  - name: subscription
+    default: ''
+
+steps:
+  - task: AzurePowerShell@5
+    displayName: "Get Template Spec Version"
+    inputs:
+      azureSubscription: '${{ parameters.serviceConnection }}'
+      ScriptType: 'InlineScript'
+      azurePowerShellVersion: 'LatestVersion'
+      Inline: |
+       Set-AzContext ${{ parameters.subscription }} | Out-Null
+       $(Pipeline.Workspace)/drop/scripts/Get-TemplateSpecVersion.ps1 -TemplateSpecName "${{parameters.specName}}" -ResourceGroupName "${{parameters.resourceGroup}}"
+      pwsh: true
+  - task: AzurePowerShell@5
+    displayName: "Deploy Template Spec"
+    inputs:
+      azureSubscription: '${{ parameters.serviceConnection }}'
+      ScriptType: 'InlineScript'
+      Inline: |
+       Set-AzContext ${{ parameters.subscription }} | Out-Null
+       Write-Host "Deploying template spec: ${{ parameters.specName }}"
+       Write-Host "Versionnumber: $(versionnumber)"
+       Write-Host "Resource group: ${{ parameters.resourceGroup }}"
+       Write-Host "Template file: $(Pipeline.Workspace)/drop/template/${{parameters.fileName}}.json"
+       New-AzTemplateSpec -Name "${{parameters.specName}}" -Version "$(versionnumber)" -ResourceGroupName "${{parameters.resourceGroup}}" -Location "westeurope" -TemplateFile "$(Pipeline.Workspace)/drop/template/${{parameters.fileName}}.json"
+      azurePowerShellVersion: 'LatestVersion'
+      pwsh: true

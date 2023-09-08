@@ -1,0 +1,46 @@
+parameters:
+  - name: bicepPath
+    default: ""
+  - name: fileName
+    default: ""
+  - name: serviceConnection
+    default: ""
+  - name: specName
+    default: ""
+  - name: resourceGroup
+    default: ""
+  - name: subscription
+    default: ""
+
+stages:
+  - stage: Build
+    displayName: "Build Template Spec ARM"
+    jobs:
+      - job:
+        displayName: "Build Template Spec ARM"
+        continueOnError: false
+        steps:
+        - template: buildbicep.yml
+          parameters:
+            bicepPath: "${{ parameters.bicepPath }}"
+            fileName: "${{ parameters.fileName }}"
+            serviceConnection: "${{ parameters.serviceConnection }}"
+  - stage: Deploy
+    displayName: "Deploy Azure Template Spec"
+    dependsOn:
+      - Build
+    jobs:
+      - deployment: TemplateSpecDeployment
+        displayName: Deploy Template Spec
+        environment: "Azure Platform"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: deploytemplatespec.yml
+                  parameters:
+                    fileName: "${{ parameters.fileName }}"
+                    serviceConnection: "${{ parameters.serviceConnection }}"
+                    specName: "${{ parameters.specName }}"
+                    resourceGroup: "${{ parameters.resourceGroup }}"
+                    subscription: "${{ parameters.subscription }}"

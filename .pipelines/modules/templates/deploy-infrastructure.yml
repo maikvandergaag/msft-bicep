@@ -1,0 +1,44 @@
+parameters:
+  - name: azureServiceConnection
+    type: string
+  - name: subscriptionId
+    type: string 
+  - name: location
+    type: string
+    default: 'West Europe'
+  - name: pipelineartifact
+    type: string
+    default: 'solution-build'
+  - name: artifactName
+    type: string
+    default: 'iacpackageinfrastructure'
+  - name: modulesArtifactName
+    type: string
+    default: 'modules'
+  - name: templateFile
+    type: string
+    default: '$(Pipeline.Workspace)/solution-build/iacpackageinfrastructure/registry/registry.bicep'
+  - name: parametersFile
+    type: string
+    default: '$(Pipeline.Workspace)/solution-build/iacpackageinfrastructure/registry/registry-param'
+
+steps:
+  - download: ${{ parameters.pipelineartifact }}
+    displayName: 'Infrastructure - Download artifact'
+    artifact: ${{ parameters.artifactName }}
+  - download: ${{ parameters.pipelineartifact }}
+    displayName: 'Infrastructure - Download modules'
+    artifact: ${{ parameters.modulesArtifactName }}
+  - script: bicep build-params '${{ parameters.parametersfile }}.bicepparam'
+    displayName: Convert Bicep Params file
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: 'Infrastructure - Deploy'
+    inputs:
+      deploymentScope: 'Subscription'
+      azureResourceManagerConnection: '${{ parameters.azureServiceConnection }}'
+      subscriptionId: '${{ parameters.subscriptionId }}'
+      location: '${{ parameters.location }}'
+      templateLocation: 'Linked artifact'
+      csmFile: '${{ parameters.templatefile }}'
+      csmParametersFile: '${{ parameters.parametersfile }}.json'
+      deploymentMode: 'Incremental'

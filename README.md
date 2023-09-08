@@ -1,2 +1,2 @@
-# msft-bicep
-Repository for Bicep functionality
+# Introduction 
+Repository containing Bicep modules for 3fifty.

@@ -1,0 +1,42 @@
+resources:
+ pipelines:
+  - pipeline: 'solution-build'
+    source: 'BR - Build - Bicep Modules'
+    trigger: true
+
+trigger: none
+
+variables:
+- group: 'deployment-variables'
+- group: 'bicep-docs'
+
+stages:
+  - stage: Release_Modules
+    displayName: Release Modules
+    jobs:
+      - deployment: Deployment_Modules
+        displayName: Deploy modules to registry
+        environment: "Bicep Registry"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates/deploy-modules.yml
+                  parameters:
+                    azureServiceConnection: '$(serviceconnection)'
+                    registry: '$(registryname)'
+  - stage: Release_Documentation
+    displayName: Release Documentation
+    dependsOn: [] 
+    jobs:
+      - deployment: Documentation_Modules
+        displayName: Deploy documentation to wiki
+        environment: "Wiki"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates/parts/deploy-documentation.yml
+                  parameters:
+                      wikiUri: '$(wikiUrl)'
+                      wikiPath: '$(wikiPath)'
