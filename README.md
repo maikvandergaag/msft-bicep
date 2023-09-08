@@ -1,2 +1,2 @@
 # Introduction 
-Repository containing Bicep modules for 3fifty.
+Repository containing a lot off functionality for working with bicep and bicep modules
