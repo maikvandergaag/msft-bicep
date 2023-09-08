@@ -27,6 +27,8 @@ stages:
           inputs:
             deploymentScope: 'Resource Group'
             azureResourceManagerConnection: '$(serviceconnection-sub)'
+            subscriptionId: '$(subscription-sub)'
+            action: 'Create Or Update Resource Group'
             resourceGroupName: 'sponsor-rg-testing'
             location: 'West Europe'
             templateLocation: 'Linked artifact'
