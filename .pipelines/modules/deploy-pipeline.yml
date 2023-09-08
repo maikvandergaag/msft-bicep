@@ -4,35 +4,30 @@ variables:
 - group: 'deployment-variables'
 
 stages:
-  - stage: Deploy_IaC_Registry
-    displayName: Deploy Certified Function
+  - stage: Build
+    displayName: Build
     jobs:
-      - deployment: Deployment_Modules
-        displayName: Deploy Azure Certified Function
-        environment: "Azure Function"
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
-                  clean: true
-                - task: AzureCLI@2
-                  displayName: 'Build Bicep file'
-                  inputs:
-                    azureSubscription: '$(serviceconnection-sub)'
-                    scriptType: 'pscore'
-                    scriptLocation: 'inlineScript'
-                    inlineScript: |
-                      bicep build 'templatespecs/certifiedfunction/certifiedfunction.bicep'
-                      bicep build-params 'templatespecs/certifiedfunction/certifiedfunction-param.bicepparam'
-                - task: AzureResourceManagerTemplateDeployment@3
-                  displayName: 'Infrastructure - Deploy'
-                  inputs:
-                    deploymentScope: 'Resource Group'
-                    azureResourceManagerConnection: '$(serviceconnection-sub)'
-                    resourceGroupName: 'sponsor-rg-testing'
-                    location: 'West Europe'
-                    templateLocation: 'Linked artifact'
-                    csmFile: 'templatespecs/certifiedfunction/certifiedfunction.json'
-                    csmParametersFile: 'templatespec/certifiedfunction/certifiedfunction-param.json'
-                    deploymentMode: 'Incremental'
+    - job: Deploy
+      displayName: Deploy Certified Function
+      continueOnError: false
+      steps:
+        - task: AzureCLI@2
+          displayName: 'Build Bicep file'
+          inputs:
+            azureSubscription: '$(serviceconnection-sub)'
+            scriptType: 'pscore'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+               bicep build '$(System.DefaultWorkingDirectory)/templatespecs/certifiedfunction/certifiedfunction.bicep'
+               bicep build-params '$(System.DefaultWorkingDirectory)/templatespecs/certifiedfunction/certifiedfunction-param.bicepparam'
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Infrastructure - Deploy'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: '$(serviceconnection-sub)'
+            resourceGroupName: 'sponsor-rg-testing'
+            location: 'West Europe'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(System.DefaultWorkingDirectory)/templatespecs/certifiedfunction/certifiedfunction.json'
+            csmParametersFile: '$(System.DefaultWorkingDirectory)/templatespec/certifiedfunction/certifiedfunction-param.json'
+            deploymentMode: 'Incremental'
