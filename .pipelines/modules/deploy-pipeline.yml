@@ -30,7 +30,6 @@ stages:
                   inputs:
                     deploymentScope: 'Resource Group'
                     azureResourceManagerConnection: '$(serviceconnection-sub)'
-                    subscriptionId: '$(subscriptionId)'
                     resourceGroupName: 'sponsor-rg-testing'
                     location: 'West Europe'
                     templateLocation: 'templatespecs/certifiedfunction/certifiedfunction.bicep'
