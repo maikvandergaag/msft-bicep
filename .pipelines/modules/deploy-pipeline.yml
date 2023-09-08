@@ -33,5 +33,5 @@ stages:
             location: 'West Europe'
             templateLocation: 'Linked artifact'
             csmFile: '$(System.DefaultWorkingDirectory)/templatespecs/certifiedfunction/certifiedfunction.json'
-            csmParametersFile: '$(System.DefaultWorkingDirectory)/templatespec/certifiedfunction/certifiedfunction-param.json'
+            csmParametersFile: '$(System.DefaultWorkingDirectory)/templatespecs/certifiedfunction/certifiedfunction-param.json'
             deploymentMode: 'Incremental'
