@@ -1,0 +1,39 @@
+resources:
+ pipelines:
+  - pipeline: 'solution-build'
+    source: 'BR - Build - Bicep Registry'
+    trigger: true
+
+trigger: none
+
+variables:
+- group: 'deployment-variables'
+
+stages:
+  - stage: Deploy_IaC_Registry
+    displayName: Deploy Infrastructure as Code Registry
+    jobs:
+      - deployment: Deployment_Modules
+        displayName: Deploy Bicep registry
+        environment: "Bicep Registry"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  clean: true
+                - task: AzureResourceManagerTemplateDeployment@3
+                  displayName: 'Infrastructure - Deploy'
+                  inputs:
+                    deploymentScope: 'Subscription'
+                    azureResourceManagerConnection: '$(serviceconnection)'
+                    subscriptionId: '$(subscriptionId)'
+                    location: 'West Europe'
+                    templateLocation: 'templatespec/certifiedfunction/certifiedfunction.bicep'
+                    csmFile: '${{ parameters.templatefile }}'
+                    csmParametersFile: '${{ parameters.parametersfile }}.json'
+                    deploymentMode: 'Incremental'
+                - template: templates/deploy-infrastructure.yml
+                  parameters:
+                    azureServiceConnection: '$(serviceconnection)'
+                    subscriptionId: '$(subscriptionId)'
