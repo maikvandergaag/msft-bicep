@@ -22,6 +22,8 @@ stages:
               steps:
                 - checkout: self
                   clean: true
+                - script: bicep build-params 'templatespec/certifiedfunction/certifiedfunction-param.bicepparam'
+                  displayName: Convert Bicep Params file
                 - task: AzureResourceManagerTemplateDeployment@3
                   displayName: 'Infrastructure - Deploy'
                   inputs:
@@ -32,5 +34,5 @@ stages:
                     location: 'West Europe'
                     templateLocation: 'templatespec/certifiedfunction/certifiedfunction.bicep'
                     csmFile: 'templatespec/certifiedfunction/certifiedfunction.bicep'
-                    csmParametersFile: 'templatespec/certifiedfunction/certifiedfunction.bicepparam'
+                    csmParametersFile: 'templatespec/certifiedfunction/certifiedfunction-param.json'
                     deploymentMode: 'Incremental'
