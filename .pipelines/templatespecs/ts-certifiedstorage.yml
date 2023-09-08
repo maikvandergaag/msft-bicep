@@ -1,4 +1,7 @@
-trigger: none
+trigger:
+  paths:
+    include:
+      - templatespecs/certifiedstorage
 
 pool:
   vmImage: ubuntu-latest
