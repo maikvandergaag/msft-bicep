@@ -3,7 +3,7 @@ name: TS - Certified Storage
 on:
   push:
     paths:
-      - 'templatespec/certifiedstorage/*'
+      - 'templatespecs/certifiedstorage/*'
       - .github/workflows/templatespec-certifiedstorage.yml
     branches: [ main ]
   pull_request:
@@ -14,7 +14,7 @@ on:
 
 env:
   specName: az-tempspec-certifiedstorage-actions
-  specfolder: './templatespec/certifiedstorage/certifiedstorage'
+  specfolder: './templatespecs/certifiedstorage/certifiedstorage'
   specfilename: certifiedstorage.json
   resourcegroup: gaag-rg-iac-prd
 
