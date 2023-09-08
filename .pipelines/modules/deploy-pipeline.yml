@@ -23,8 +23,8 @@ stages:
                     scriptType: 'pscore'
                     scriptLocation: 'inlineScript'
                     inlineScript: |
-                      az bicep build --file 'templatespecs/certifiedfunction/certifiedfunction.bicep'
-                      az bicep build-params --file 'templatespecs/certifiedfunction/certifiedfunction-param.bicepparam'
+                      bicep build 'templatespecs/certifiedfunction/certifiedfunction.bicep'
+                      bicep build-params 'templatespecs/certifiedfunction/certifiedfunction-param.bicepparam'
                 - task: AzureResourceManagerTemplateDeployment@3
                   displayName: 'Infrastructure - Deploy'
                   inputs:
