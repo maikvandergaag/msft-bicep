@@ -32,7 +32,7 @@ stages:
                     azureResourceManagerConnection: '$(serviceconnection-sub)'
                     resourceGroupName: 'sponsor-rg-testing'
                     location: 'West Europe'
-                    templateLocation: 'LInked artifact'
+                    templateLocation: 'Linked artifact'
                     csmFile: 'templatespecs/certifiedfunction/certifiedfunction.bicep'
                     csmParametersFile: 'templatespec/certifiedfunction/certifiedfunction-param.json'
                     deploymentMode: 'Incremental'
