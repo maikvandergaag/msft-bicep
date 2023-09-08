@@ -1,7 +1,7 @@
 metadata info = {
   title: 'Function app module'
   description: 'Module for a Azure Function App'
-  version: '0.0.2'
+  version: '1.0.0'
   author: 'Maik van der Gaag'
 }
 
@@ -19,6 +19,9 @@ param env string
 
 @description('The location of the function app')
 param location string = resourceGroup().location
+
+@description('Additional app settings')
+param appSettings array = []
 
 var functionname = 'azfunc-${name}-${env}'
 
@@ -70,6 +73,12 @@ resource functionapp 'Microsoft.Web/sites@2022-09-01' = {
       ]
     }
   }
+}
+
+resource siteconfig 'Microsoft.Web/sites/config@2022-03-01' = {
+  parent: functionapp
+  name: 'appsettings'
+  properties: union(functionapp.properties.siteConfig.appSettings, appSettings)
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {

@@ -17,12 +17,16 @@ param name string
 @description('The environment were the service is beign deployed to (tst, acc, prd, dev)')
 param environment string
 
-module function 'br/myregistry:functionapp:0.0.1' ={
+module function 'br/myregistry:functionapp:1.0.0' ={
   name: 'functionapp'
   params:{
     environment: environment
     name: name
     location: 'westeurope'
+    appSettings:{
+      APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.outputs.InstrumentationKey
+      APPLICATIONINSIGHTS_CONNECTION_STRING: appInsights.outputs.ConnectionString
+    }
   }
 }
 
