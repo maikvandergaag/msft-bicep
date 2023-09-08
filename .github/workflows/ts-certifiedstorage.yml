@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'templatespecs/certifiedstorage/*'
-      - .github/workflows/templatespec-certifiedstorage.yml
+      - .github/workflows/*
     branches: [ main ]
   pull_request:
     branches: [ main ]
@@ -38,10 +38,6 @@ jobs:
          with:
            specFolder: ${{env.specfolder}}
            specName: ${{env.specName}}
-           secret: ${{ secrets.AZURE_CREDENTIALS_MANAGEMENTGROUP }}
            resourceGroup: ${{env.resourcegroup}}
            specFileName : ${{env.specfilename}}
-           clientId: ${{ secrets.AZURE_CLIENT_ID }}
-           clientSecret: ${{ secrets.AZURE_CLIENT_SECRET }}
-           tenantId: ${{ secrets.AZURE_TENANT_ID }}
            azureSubscription: 5b389701-0e47-4738-b4fe-ddb67ac3a036

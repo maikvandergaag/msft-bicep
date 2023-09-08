@@ -1,15 +1,6 @@
 name: "Deploy Template Spec"
 description: "Composite actions for deploying a template spec."
 inputs:
-  clientId:
-    description: 'Application client ID'
-    required: true
-  clientSecret:
-    description: 'Application client Secret'
-    required: true
-  tenantId:
-    description: 'Application tenant Id'
-    required: true
   azureSubscription:
     description: 'Subscription'
     required: true
@@ -18,9 +9,6 @@ inputs:
     required: true
   specName:
     description: 'Specification name'
-    required: true
-  secret:
-    description: 'Azure Secret'
     required: true
   resourceGroup:
     description: 'Name of the resource group'
@@ -42,7 +30,7 @@ runs:
        - name: Azure Login
          uses: Azure/login@v1
          with:
-           creds: '{"clientId":"${{ inputs.clientId }}","clientSecret":"${{ inputs.clientSecret }}","subscriptionId":"${{ inputs.azureSubscription }}","tenantId":"${{ inputs.tenantId }}"}'
+           creds: ${{ secrets.AZURE_CREDENTIALS }}
            enable-AzPSSession: true
        - name: Check versionnumber
          uses: azure/powershell@v1
@@ -50,10 +38,10 @@ runs:
          with:
            inlineScript: |
               .\Get-TemplateSpecVersion.ps1 -TemplateSpecName "${{env.specName}}" -ResourceGroupName "${{inputs.resourceGroup}}"
-           azPSVersion: '6.1.0'
+           azPSVersion: '10.2.0'
        - name: Create / Update template spec
          uses: azure/powershell@v1
          with:
            inlineScript: |
             New-AzTemplateSpec -Name "${{inputs.specName}}" -Version "${{ steps.calculate.outputs.versionnumber }}" -ResourceGroupName "${{inputs.resourceGroup}}" -Location "westeurope" -TemplateFile ".\${{inputs.specFileName}}"
-           azPSVersion: '6.1.0'
+           azPSVersion: '10.2.0'
