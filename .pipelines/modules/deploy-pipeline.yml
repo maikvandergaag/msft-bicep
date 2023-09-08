@@ -33,6 +33,6 @@ stages:
                     resourceGroupName: 'sponsor-rg-testing'
                     location: 'West Europe'
                     templateLocation: 'Linked artifact'
-                    csmFile: 'templatespecs/certifiedfunction/certifiedfunction.bicep'
+                    csmFile: 'templatespecs/certifiedfunction/certifiedfunction.json'
                     csmParametersFile: 'templatespec/certifiedfunction/certifiedfunction-param.json'
                     deploymentMode: 'Incremental'
