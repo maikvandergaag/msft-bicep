@@ -45,6 +45,9 @@ module appInsights 'br/myregistry:applicationinsights:0.0.1' ={
 
 module appConfig 'br/myregistry:appconfiguration:1.0.0' = {
   name: 'appconfig'
+  dependsOn: [
+    function
+  ]
   params: {
     appName: function.outputs.functionAppName
     existingAppSettings: list(resourceId('Microsoft.Web/sites/config', 'azfunc-${name}-${environment}', 'appsettings'), '2022-03-01').properties
