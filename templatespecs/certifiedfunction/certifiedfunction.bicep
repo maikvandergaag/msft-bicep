@@ -20,7 +20,7 @@ param environment string
 module function 'br/myregistry:functionapp:1.0.1' ={
   name: 'functionapp'
   params:{
-    environment: environment
+    env: environment
     name: name
     location: 'westeurope'
     appSettings:{
