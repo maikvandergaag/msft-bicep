@@ -1,4 +1,4 @@
 using './certifiedfunction.bicep'
-param name = 'test-ado'
+param name = 'testadodeploy'
 param environment = 'tst'
 
