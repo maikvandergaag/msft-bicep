@@ -17,7 +17,7 @@ param name string
 @description('The environment were the service is beign deployed to (tst, acc, prd, dev)')
 param environment string
 
-module function 'br/myregistry:functionapp:1.0.0' ={
+module function 'br/myregistry:functionapp:1.0.1' ={
   name: 'functionapp'
   params:{
     environment: environment
@@ -44,20 +44,5 @@ module appInsights 'br/myregistry:applicationinsights:0.0.1' ={
     name: name
     environment: environment
     logAnalyticsWorkspaceId: loganalytics.outputs.workspaceId
-  }
-}
-
-module appConfig 'br/myregistry:appconfiguration:1.0.0' = {
-  name: 'appconfig'
-  dependsOn: [
-    function
-  ]
-  params: {
-    appName: function.outputs.functionAppName
-    existingAppSettings: list(resourceId('Microsoft.Web/sites/config', 'azfunc-${name}-${environment}', 'appsettings'), '2022-03-01').properties
-    appSettings:{
-      APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.outputs.InstrumentationKey
-      APPLICATIONINSIGHTS_CONNECTION_STRING: appInsights.outputs.ConnectionString
-    }
   }
 }

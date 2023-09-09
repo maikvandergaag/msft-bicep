@@ -1,7 +1,7 @@
 metadata info = {
   title: 'Function app module'
   description: 'Module for a Azure Function App'
-  version: '1.0.0'
+  version: '1.0.1'
   author: 'Maik van der Gaag'
 }
 
@@ -21,7 +21,7 @@ param env string
 param location string = resourceGroup().location
 
 @description('Additional app settings')
-param appSettings array = []
+param appSettings object = {}
 
 var functionname = 'azfunc-${name}-${env}'
 
@@ -57,20 +57,6 @@ resource functionapp 'Microsoft.Web/sites@2022-09-01' = {
       alwaysOn: false
       netFrameworkVersion: 'v6.0'
       minTlsVersion: '1.2'
-      appSettings: [
-        {
-          name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
-        }
-        {
-          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
-        }
-        {
-          name: 'WEBSITE_CONTENTSHARE'
-          value: toLower(functionname)
-        }
-      ]
     }
   }
 }
@@ -78,7 +64,11 @@ resource functionapp 'Microsoft.Web/sites@2022-09-01' = {
 resource siteconfig 'Microsoft.Web/sites/config@2022-03-01' = {
   parent: functionapp
   name: 'appsettings'
-  properties: union(functionapp.properties.siteConfig.appSettings, appSettings)
+  properties: union({
+    AzureWebJobsStorage:'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+    WEBSITE_CONTENTSHARE: toLower(functionname)
+  }, appSettings)
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
