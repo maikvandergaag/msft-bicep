@@ -132,7 +132,7 @@ PROCESS {
                 $StringBuilderParameter += $parameterHeader
                 $StringBuilderParameter += $parameterHeaderDivider
 
-                $StringBuilderParameter += $templateObject.parameters | get-member -MemberType NoteProperty | ForEach-Object { $parameterRow -f $_.Name , $templateObject.parameters.($_.Name).type , $templateObject.parameters.($_.Name).metadata.description, $templateObject.parameters.($_.Name).defaultValue , (($templateObject.parameters.($_.Name).allowedValues) -join ',' ) }
+                $StringBuilderParameter += $templateObject.parameters | get-member -MemberType NoteProperty | ForEach-Object { $parameterRow -f $_.Name , $templateObject.parameters.($_.Name).type , $templateObject.parameters.($_.Name).metadata.description, $templateObject.parameters.($_.Name).defaultValue , (($templateObject.parameters.($_.Name).allowedValues) -join ',' ), $(if ($templateObject.parameters.($_.Name).defaultValue) {"https://img.shields.io/badge/parameter-optional-green?style=flat-square"} Else {"https://img.shields.io/badge/parameter-required-orange?style=flat-square"}) }
                 $StringBuilderParameter | Out-File -FilePath $outputFile -Append
 
                 ("## Resources") | Out-File -FilePath $outputFile -Append
