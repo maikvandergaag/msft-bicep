@@ -124,9 +124,9 @@ PROCESS {
 
                 ("## Parameters") | Out-File -FilePath $outputFile -Append
                 # Create a Parameter List Table
-                $parameterHeader = "| Name | Type | Description | Default value | Allowed values |"
-                $parameterHeaderDivider = "| --- | --- | --- | --- | --- | "
-                $parameterRow = " | {0}| {1} | {2} | {3} | {4} |"
+                $parameterHeader = "| Name | Type | Description | Default value | Allowed values | Required |"
+                $parameterHeaderDivider = "| --- | --- | --- | --- | --- | --- |"
+                $parameterRow = " | {0}| {1} | {2} | {3} | {4} | {5} |"
 
                 $StringBuilderParameter = @()
                 $StringBuilderParameter += $parameterHeader
