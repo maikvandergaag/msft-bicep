@@ -19,7 +19,7 @@ permissions:
 
 jobs:
     bicep-tests:
-      name: 'Bicep Unit Tests'
+      name: 'Bicep Tests'
       runs-on: ubuntu-latest
       steps:
       - name: Checkout
