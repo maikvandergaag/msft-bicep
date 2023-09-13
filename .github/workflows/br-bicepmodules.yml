@@ -11,6 +11,12 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+   
+permissions:
+  id-token: write
+  contents: read
+  security-events: write
+
 
 jobs:
     bicep-unit-tests:
@@ -26,12 +32,13 @@ jobs:
       - name: Bicep Lint
         uses: Azure/cli@v1
         with:
-          inlineScript: for f in `find -name "/modules/**/*.bicep"`; do az bicep build -f $f; done
+          inlineScript: for f in `find -name "modules/*.bicep"`; do az bicep build -f $f; done
       - name: Run Checkov action
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
           framework: bicep
+          directory: modules/
       - name: Upload SARIF file
         if: success() || failure()
         uses: github/codeql-action/upload-sarif@v2
