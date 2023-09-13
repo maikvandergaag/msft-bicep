@@ -1,0 +1,48 @@
+name: BR - Build Bicep Modules
+
+on:
+  push:
+    paths:
+      - modules/*
+      - .github/workflows/*
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  specName: az-tempspec-certifiedstorage-actions
+  specfolder: './templatespecs/certifiedstorage/certifiedstorage'
+  specfilename: certifiedstorage.json
+  resourcegroup: gaag-rg-iac-prd
+
+jobs:
+    bicep-unit-tests:
+      name: 'Bicep Unit Tests'
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Bicep Lint
+        uses: Azure/cli@v1
+        with:
+          inlineScript: az bicep build --file modules/*.bicep
+      - name: Run Checkov action
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          framework: bicep
+      - name: Upload SARIF file
+        if: success() || failure()
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif
+          category: checkov
