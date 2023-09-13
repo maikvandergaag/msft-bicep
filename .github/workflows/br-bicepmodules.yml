@@ -12,12 +12,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-env:
-  specName: az-tempspec-certifiedstorage-actions
-  specfolder: './templatespecs/certifiedstorage/certifiedstorage'
-  specfilename: certifiedstorage.json
-  resourcegroup: gaag-rg-iac-prd
-
 jobs:
     bicep-unit-tests:
       name: 'Bicep Unit Tests'
@@ -28,9 +22,7 @@ jobs:
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID  }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}"}'
       - name: Bicep Lint
         uses: Azure/cli@v1
         with:
