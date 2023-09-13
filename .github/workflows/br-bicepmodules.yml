@@ -26,7 +26,7 @@ jobs:
       - name: Bicep Lint
         uses: Azure/cli@v1
         with:
-          inlineScript: az bicep build --file modules/*.bicep
+          inlineScript: for f in `find -name "/modules/**/*.bicep"`; do az bicep build -f $f; done
       - name: Run Checkov action
         id: checkov
         uses: bridgecrewio/checkov-action@master
