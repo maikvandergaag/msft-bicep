@@ -17,9 +17,8 @@ permissions:
   contents: read
   security-events: write
 
-
 jobs:
-    bicep-unit-tests:
+    bicep-tests:
       name: 'Bicep Unit Tests'
       runs-on: ubuntu-latest
       steps:
