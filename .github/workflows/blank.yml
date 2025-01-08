@@ -22,11 +22,11 @@ jobs:
         with:
           fetch-depth: 2
 
-      # Runs a single command using the runners shell
+      - name: Get changed files
+        shell: pwsh
+        run: |
+          $files = git diff HEAD~1 --name-only
+          "VAR=$files" >> $env:GITHUB_ENV
       - name: Run a one-line script
         run: |
-          files=(git diff HEAD~1 --name-only)
-          echo "Files=$files" >> $GITHUB_ENV
-      - name: Run a one-line script
-        run: |
-         echo "Files: ${{ env.Files }}"
+         echo "Files: ${{ env.VAR }}"
