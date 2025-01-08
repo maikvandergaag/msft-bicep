@@ -30,7 +30,7 @@ jobs:
           foreach($file in $files){
             $array += $file
           }
-          $items = ConvertTo-Json $array
+          $items = ConvertTo-Json $array -Compress
           Write-Host $items
           "VAR='$items'" >> $env:GITHUB_ENV
       - name: "Changes"
