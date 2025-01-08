@@ -26,6 +26,7 @@ jobs:
         shell: pwsh
         run: |
           $files = ConvertTo-Json (git diff HEAD~1 --name-only) -Depth 10
+          Write-Host $files
           "VAR=$files" >> $env:GITHUB_ENV
       - name: "Changes"
         shell: pwsh
