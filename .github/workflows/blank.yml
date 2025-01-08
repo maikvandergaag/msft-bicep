@@ -22,4 +22,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: git diff --name-only origin/main origin/${GITHUB_HEAD_REF}
+        run: git diff --name-only origin/main
