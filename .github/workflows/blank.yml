@@ -25,7 +25,7 @@ jobs:
       - name: Get changed files
         shell: pwsh
         run: |
-          $files = ConvertTo-Json (git diff HEAD~1 --name-only)
+          $files = ConvertTo-Json (git diff HEAD~1 --name-only) -Depth 10
           "VAR=$files" >> $env:GITHUB_ENV
       - name: "Changes"
         shell: pwsh

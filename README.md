@@ -1,2 +1,2 @@
 # Introduction 
-Repository containing a lot off functionality for working with bicep and bicep modules
+Repository containing functionality for working with bicep and bicep modules
