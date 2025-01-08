@@ -30,13 +30,13 @@ jobs:
           foreach($file in $files){
             $array += $file
           }
-
-          Write-Host $array
-          "VAR=$array" >> $env:GITHUB_ENV
+          $items = ConvertTo-Json $array
+          Write-Host $items
+          "VAR=$items" >> $env:GITHUB_ENV
       - name: "Changes"
         shell: pwsh
         run: |
-          $files = ${{ env.VAR }}
+          $files = ConvertFrom-Json ${{ env.VAR }}
           $report = @()
           $report += 'The following files are changed or added in the last commit:'
           foreach($file in $files){
