@@ -38,8 +38,8 @@ jobs:
         run: |
           $files = ConvertFrom-Json ${{ env.VAR }}
           $report = @()
-          $report += 'The following files are changed or added in the last commit:'
+          $report += "The following files are changed or added in the last commit:""
           foreach($file in $files){
-            $report += '* $($file)'
+            $report += "* $($file)"
           }
           $report >> $env:GITHUB_STEP_SUMMARY
