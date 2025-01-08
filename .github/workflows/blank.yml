@@ -32,7 +32,7 @@ jobs:
           }
           $items = ConvertTo-Json $array
           Write-Host $items
-          "VAR=$items" >> $env:GITHUB_ENV
+          "VAR='$items'" >> $env:GITHUB_ENV
       - name: "Changes"
         shell: pwsh
         run: |
