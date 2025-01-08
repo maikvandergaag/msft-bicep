@@ -27,6 +27,12 @@ jobs:
         run: |
           $files = git diff HEAD~1 --name-only
           "VAR=$files" >> $env:GITHUB_ENV
-      - name: Run a one-line script
+      - name: "Changes"
+        shell: pwsh
         run: |
-         echo "Files: ${{ env.VAR }}"
+          $report = @()
+          $report += 'The following files are changed or added in the last commit:'
+          foreach($file in ${{ env.VAR }}){
+            $report += '* $file'
+          }
+          $report >> $env:GITHUB_STEP_SUMMARY
