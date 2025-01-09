@@ -29,6 +29,8 @@ jobs:
           if($files.Count -eq 0){
           }else{
             foreach($file in $files){
-              bicep lint $file --diagnostics-format sarif
+              $sarif bicep lint $file --diagnostics-format sarifv2 | ConvertFrom-Json
+
+              Write-Host "Linting $file"
             }
           }
