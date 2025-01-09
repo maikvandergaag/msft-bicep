@@ -33,24 +33,6 @@ jobs:
           }else{
             foreach($file in $files){
               bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
-              Write-Host $lintResult
-              if ($lintResult -ne "") {
-                foreach ($run in $lintResult.runs) {
-                    $report += "### $file"
-                    foreach ($result in $run.results) {
-                        $message = $result.message.text
-                        $level = $result.level
-
-                        if($level -eq "error") {
-                            $hasErrors = $true
-                        }
-                        foreach ($location in $result.locations) {
-                            $lineNumber = $location.physicalLocation.region.startLine
-                        }
-                        $report += "$($level) - $($message) - Line: $($lineNumber)"
-                    }
-                }
-              }
             }
           }
           $report >> $env:GITHUB_STEP_SUMMARY
