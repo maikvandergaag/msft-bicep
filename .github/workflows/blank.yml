@@ -22,17 +22,13 @@ jobs:
           $items = ConvertTo-Json $array -Compress
           Write-Host $items
           "BICEP_FILES='$items'" >> $env:GITHUB_ENV
-      - name: "Changes"
+      - name: "Linting the bicep files"
         shell: pwsh
         run: |
           $files = ConvertFrom-Json ${{ env.BICEP_FILES }}
-          $report = @()
-          $report += "Bicep Lint Report:"
           if($files.Count -eq 0){
-            $report += "No bicep files found in the changes."
           }else{
             foreach($file in $files){
-              bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
+              bicep lint $file --diagnostics-format sarif
             }
           }
-          $report >> $env:GITHUB_STEP_SUMMARY
