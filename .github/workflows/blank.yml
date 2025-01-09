@@ -43,7 +43,7 @@ jobs:
                       }
 
                       foreach ($location in $result.locations) {
-                          $report != "* $($level) - **Line:** $($location.physicalLocation.region.startLine) - $($result.message.text)"
+                          $report += "* $($level) - **Line:** $($location.physicalLocation.region.startLine) - $($result.message.text)"
                         }
                     }
                 }
