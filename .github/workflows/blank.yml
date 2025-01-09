@@ -18,7 +18,7 @@ jobs:
       - name: Get changed files
         shell: pwsh
         run: |
-          $files = git diff HEAD~1 --name-only | Where-Object { $_ -like '*.bicep' -or -like '*.bicepparam' }
+          $files = git diff HEAD~1 --name-only | Where-Object { $_ -like '*.bicep' -or $_ -like '*.bicepparam' }
           $array = @()
           foreach($file in $files){
             $array += $file
