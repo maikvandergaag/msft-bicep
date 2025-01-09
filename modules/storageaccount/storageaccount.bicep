@@ -36,4 +36,18 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
 }
 
+resource storage1 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+  name: 'azstr${name}${environment}'
+  location: location
+  sku: {
+    name: storageSKU
+  }
+  kind: 'StorageV2'
+  properties: {
+    allowBlobPublicAccess: false
+    minimumTlsVersion: 'TLS1_2'
+    supportsHttpsTrafficOnly: true
+  }
+}
+
 output name string = storage.name

@@ -36,11 +36,20 @@ jobs:
             $report += "No bicep files found in the changes."
           }else{
             foreach($file in $files){
-              $lintResult = az bicep build --file $file --stdout 2>&1
+              $lintResult = az bicep lint --file $file --diagnostics-format sarif
               if ($lintResult -ne "") {
-                $hasErrors = $true
-                $report += "### $file"
-                $report += $lintResult
+                foreach ($run in $lintResult.runs) {
+                    foreach ($result in $run.results) {
+                        foreach ($location in $result.locations) {
+                            $message = $result.message.text
+                            $lineNumber = $location.physicalLocation.region.startLine
+                            $filePath = $location.physicalLocation.artifactLocation.uri
+                            $hasErrors = $true
+                            $report += "### $file"
+                            $report += $message + -"Line: " + $lineNumer
+                        }
+                    }
+                }
               }
             }
           }
