@@ -26,11 +26,13 @@ jobs:
         shell: pwsh
         run: |
           $files = ConvertFrom-Json ${{ env.BICEP_FILES }}
+          $report = @()
           if($files.Count -eq 0){
           }else{
             foreach($file in $files){
               $sarif = bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
 
-              Write-Host "Linting $file"
+              $report += "Linting $file"
             }
           }
+          $report >> $env:GITHUB_STEP_SUMMARY
