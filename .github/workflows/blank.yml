@@ -36,6 +36,10 @@ jobs:
                     $report += "### $file"
                     foreach ($result in $run.results) {
                         foreach ($location in $result.locations) {
+                            $report += "#### $result.ruleId"
+                            $report += "**Line:** $($location.physicalLocation.startLine)"
+                            $report += "**Column:** $($result.level)"
+                            $report += "**Message:** $($result.message.text)"
                         }
                     }
                 }
