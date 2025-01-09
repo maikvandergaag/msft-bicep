@@ -32,12 +32,16 @@ jobs:
           $files = ConvertFrom-Json ${{ env.BICEP_FILES }}
           $report = @()
           $report += "Bicep Lint Report:"
-          foreach($file in $files){
-            $lintResult = az bicep build --file $file --stdout 2>&1
-            if ($lintResult -ne "") {
-              $hasErrors = $true
-              $report += "### $file"
-              $report += $lintResult
+          if($files.Count -eq 0){
+            $report += "No bicep files found in the changes."
+          }else{
+            foreach($file in $files){
+              $lintResult = az bicep build --file $file --stdout 2>&1
+              if ($lintResult -ne "") {
+                $hasErrors = $true
+                $report += "### $file"
+                $report += $lintResult
+              }
             }
           }
           $report >> $env:GITHUB_STEP_SUMMARY
