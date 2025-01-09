@@ -14,11 +14,18 @@ jobs:
       - name: Get changed files
         shell: pwsh
         run: |
-          $files = git diff HEAD~1 --name-only | Where-Object { $_ -like '*.bicep' -or $_ -like '*.bicepparam' }
+          $allFiles = $true
+          if($allFiles){
+            $files = Get-ChildItem -Path . -Recurse -Include *.bicep,*.bicepparam
+          }else{
+            $files = git diff HEAD~1 --name-only | Where-Object { $_ -like '*.bicep' -or $_ -like '*.bicepparam' }
+          }
+          
           $array = @()
           foreach($file in $files){
             $array += $file
           }
+          
           $items = ConvertTo-Json $array -Compress
           Write-Host $items
           "BICEP_FILES='$items'" >> $env:GITHUB_ENV
@@ -70,3 +77,8 @@ jobs:
             $combinedSarif | ConvertTo-Json -Depth 100 | Out-File -FilePath "bicep-lint.sarif"
           }
           $report >> $env:GITHUB_STEP_SUMMARY
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: bicep-lint.sarif
+          category: bicep-linting
