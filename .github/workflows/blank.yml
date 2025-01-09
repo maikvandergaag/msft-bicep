@@ -11,10 +11,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-      - name: Install Bicep CLI
-        shell: pwsh
-        run: |
-          az bicep install
       - name: Get changed files
         shell: pwsh
         run: |
@@ -36,7 +32,7 @@ jobs:
             $report += "No bicep files found in the changes."
           }else{
             foreach($file in $files){
-              $lintResult = bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
+              bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
               Write-Host $lintResult
               if ($lintResult -ne "") {
                 foreach ($run in $lintResult.runs) {
