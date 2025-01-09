@@ -32,7 +32,13 @@ jobs:
             foreach($file in $files){
               $sarif = bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
 
-              $report += "Linting $file"
+              foreach ($run in $sarif.runs) {
+                    $report += "### $file"
+                    foreach ($result in $run.results) {
+                        foreach ($location in $result.locations) {
+                        }
+                    }
+                }
             }
           }
           $report >> $env:GITHUB_STEP_SUMMARY
