@@ -27,19 +27,23 @@ jobs:
         run: |
           $files = ConvertFrom-Json ${{ env.BICEP_FILES }}
           $report = @()
+          $report += "## Bicep Linting Report :rocket:"
           if($files.Count -eq 0){
           }else{
             foreach($file in $files){
               $sarif = bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
 
               foreach ($run in $sarif.runs) {
-                    $report += "### $file"
+                    $report += "**$($file)**"
                     foreach ($result in $run.results) {
-                        foreach ($location in $result.locations) {
-                            $report += "#### $result.ruleId"
-                            $report += "**Line:** $($location.physicalLocation.startLine)"
-                            $report += "**Column:** $($result.level)"
-                            $report += "**Message:** $($result.message.text)"
+                      if($result.level -eq "error"){
+                        $level = ":triangular_flag_on_post:"
+                      }else if($result.level -eq "warning"){
+                        $level = ":warning:"
+                      }
+
+                      foreach ($location in $result.locations) {
+                          $report != "* $($level) - **Line:** $($location.physicalLocation.region.startLine) - $($result.message.text)"
                         }
                     }
                 }
