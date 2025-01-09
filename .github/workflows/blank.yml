@@ -38,44 +38,43 @@ jobs:
           $createSarif = $true
           $combinedSarif = @()
 
-          if($files.Count -eq 0){
-            $report += "No bicep files found in the commit"
-          }else{
-            foreach($file in $files){
-              Write-Output "- Linting $file"
-              $sarif = bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
+          if ($files.Count -eq 0) {
+              $report += "No bicep files found in the commit"
+          }
+          else {
+              foreach ($file in $files) {
+                  Write-Output "- Linting $file"
+                  $sarif = bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
 
-             if(!$combinedSarif -and $createSarif){
-               $combinedSarif = $sarif
-               $first = $true
-             }
+                  foreach ($run in $sarif.runs) {
+                      $report += "**$($file)**"
 
-              foreach ($run in $sarif.runs) {
-                    $report += "**$($file)**"
+                      foreach ($result in $run.results) {
 
-                    foreach ($result in $run.results) {
-
-                      if($createSarif -and !$first){
-                        $combinedSarif.runs[0].results += $result
+                          if ($null -eq $combinedSarif.runs -and $createSarif) {
+                              $combinedSarif = $sarif
+                          }else {
+                              if ($createSarif) {
+                                  $combinedSarif.runs[0].results += $result
+                              }
+                              
+                              $level = switch ($result.level) {
+                                  "error" { ":triangular_flag_on_post:" }
+                                  "warning" { ":warning:" }
+                                  default { ":information_source:" }
+                              }
+                              foreach ($location in $result.locations) {
+                                  $report += "* $($level) - **Line:** $($location.physicalLocation.region.startLine) - $($result.message.text)"
+                              }
+                          }                
                       }
-
-                      if($result.level -eq "error"){
-                        $level = ":triangular_flag_on_post:"
-                      }elseif($result.level -eq "warning"){
-                        $level = ":warning:"
-                      }
-
-                      foreach ($location in $result.locations) {
-                          $report += "* $($level) - **Line:** $($location.physicalLocation.region.startLine) - $($result.message.text)"
-                        }
-                    }
-                }
-            }
+                  }
+              }
           }
 
-          if($combinedSarif -and $createSarif){
-            Write-Output "Creating SARIF file"
-            $combinedSarif | ConvertTo-Json -Depth 100 | Out-File -FilePath "bicep-lint.sarif"
+          if ($combinedSarif -and $createSarif) {
+              Write-Output "Creating SARIF file"
+              $combinedSarif | ConvertTo-Json -Depth 100 | Out-File -FilePath "bicep-lint.sarif"
           }
           $report >> $env:GITHUB_STEP_SUMMARY
       - name: Upload SARIF file

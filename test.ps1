@@ -2,24 +2,50 @@
 $baseDir = "D:\src\github\msft-bicep"
 
 # Find all Bicep files in the base directory
-$bicepFiles = Get-ChildItem -Path $baseDir -Recurse -Filter *.bicep
+$files = Get-ChildItem -Path $baseDir -Recurse -Filter *.bicep | Select-Object -ExpandProperty FullName
 
-# Initialize an array to store the combined SARIF results
+$report = @()
+$report += "## Bicep Linting Report :rocket:"
+$createSarif = $true
 $combinedSarif = @()
 
-# Iterate through each Bicep file and run the bicep lint command
-foreach ($file in $bicepFiles) {
-    $lintResult = bicep lint $file.FullName --diagnostics-format sarif | ConvertFrom-Json
-    if ($lintResult -ne "") {
+if ($files.Count -eq 0) {
+    $report += "No bicep files found in the commit"
+}
+else {
+    foreach ($file in $files) {
+        Write-Output "- Linting $file"
+        $sarif = bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
 
-        if($combinedSarif){
-            foreach($result in $lintResult.runs[0].results){
-                $combinedSarif.runs[0].results += $result
+        foreach ($run in $sarif.runs) {
+            $report += "**$($file)**"
+
+            foreach ($result in $run.results) {
+
+                if ($null -eq $combinedSarif.runs -and $createSarif) {
+                    $combinedSarif = $sarif
+                }else {
+                    if ($createSarif) {
+                        $combinedSarif.runs[0].results += $result
+                    }
+                    
+                    $level = switch ($result.level) {
+                        "error" { ":triangular_flag_on_post:" }
+                        "warning" { ":warning:" }
+                        default { ":information_source:" }
+                    }
+                    foreach ($location in $result.locations) {
+                        $report += "* $($level) - **Line:** $($location.physicalLocation.region.startLine) - $($result.message.text)"
+                    }
+                }                
             }
-        }else{
-            $combinedSarif = $lintResult
         }
     }
 }
 
-$combinedSarif
+if ($combinedSarif -and $createSarif) {
+    Write-Output "Creating SARIF file"
+    $combinedSarif | ConvertTo-Json -Depth 100 | Out-File -FilePath "bicep-lint.sarif"
+}
+
+$report | Out-File -FilePath "bicep-lint-report.md"
