@@ -21,25 +21,35 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-
+      - name: Install Bicep CLI
+        shell: pwsh
+        run: |
+          az bicep install
       - name: Get changed files
         shell: pwsh
         run: |
-          $files = git diff HEAD~1 --name-only
+          $files = git diff HEAD~1 --name-only | Where-Object { $_ -like '*.bicep' '*.bicepparam' }
           $array = @()
           foreach($file in $files){
             $array += $file
           }
           $items = ConvertTo-Json $array -Compress
           Write-Host $items
-          "VAR='$items'" >> $env:GITHUB_ENV
+          "BICEP_FILES='$items'" >> $env:GITHUB_ENV
       - name: "Changes"
         shell: pwsh
         run: |
-          $files = ConvertFrom-Json ${{ env.VAR }}
+          $files = ConvertFrom-Json ${{ env.BICEP_FILES }}
           $report = @()
-          $report += "The following files are changed or added in the last commit:"
+          $report += "Bicep Lint Report:"
           foreach($file in $files){
-            $report += "* $($file)"
+            $lintResult = az bicep build --file $file --stdout 2>&1
+            if ($lintResult -ne "") {
+              $hasErrors = $true
+              $report += "### $file"
+              $report += "```"
+              $report += $lintResult
+              $report += "```"
+            }
           }
           $report >> $env:GITHUB_STEP_SUMMARY
