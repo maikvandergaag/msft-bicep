@@ -37,9 +37,7 @@ jobs:
             if ($lintResult -ne "") {
               $hasErrors = $true
               $report += "### $file"
-              $report += "```"
               $report += $lintResult
-              $report += "```"
             }
           }
           $report >> $env:GITHUB_STEP_SUMMARY
