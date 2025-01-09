@@ -28,14 +28,30 @@ jobs:
           $files = ConvertFrom-Json ${{ env.BICEP_FILES }}
           $report = @()
           $report += "## Bicep Linting Report :rocket:"
+          $createSarif = $true
+          $combinedSarif = @()
+
           if($files.Count -eq 0){
+            $report += "No bicep files found in the commit"
           }else{
             foreach($file in $files){
+              Write-Output "- Linting $file"
               $sarif = bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
+
+             if($combinedSarif -and $createSarif){
+               $combinedSarif = $sarif
+               $first = $true
+             }
 
               foreach ($run in $sarif.runs) {
                     $report += "**$($file)**"
+
                     foreach ($result in $run.results) {
+
+                      if($combinedSarif -and $createSarif -and !$first){
+                        $combinedSarif.runs[0].results += $result
+                      }
+
                       if($result.level -eq "error"){
                         $level = ":triangular_flag_on_post:"
                       }elseif($result.level -eq "warning"){
@@ -48,5 +64,9 @@ jobs:
                     }
                 }
             }
+          }
+
+          if($combinedSarif -and $createSarif){
+            $combinedSarif | ConvertTo-Json -Depth 100 | Out-File -FilePath "bicep-lint.sarif"
           }
           $report >> $env:GITHUB_STEP_SUMMARY
