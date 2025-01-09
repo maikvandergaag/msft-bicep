@@ -16,7 +16,7 @@ param storageSKU string = 'Standard_LRS'
 @allowed([
   't'
   'a'
-  'p'
+  'prod'
   'dev'
 ])
 @description('The environment were the service is beign deployed to (tst, acc, prd, dev)')

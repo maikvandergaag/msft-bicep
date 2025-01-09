@@ -36,6 +36,7 @@ jobs:
             $report += "No bicep files found in the changes."
           }else{
             foreach($file in $files){
+              $lintResult = az bicep lint --file $file --diagnostics-format sarif | ConvertFrom-Json
               if ($lintResult -ne "") {
                 foreach ($run in $lintResult.runs) {
                     $report += "### $file"
