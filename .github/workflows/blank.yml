@@ -38,7 +38,7 @@ jobs:
                     foreach ($result in $run.results) {
                       if($result.level -eq "error"){
                         $level = ":triangular_flag_on_post:"
-                      }else if($result.level -eq "warning"){
+                      }elseif($result.level -eq "warning"){
                         $level = ":warning:"
                       }
 
