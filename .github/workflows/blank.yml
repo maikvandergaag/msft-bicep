@@ -37,6 +37,7 @@ jobs:
           }else{
             foreach($file in $files){
               $lintResult = az bicep lint --file $file --diagnostics-format sarif | ConvertFrom-Json
+              Write-Host $lintResult
               if ($lintResult -ne "") {
                 foreach ($run in $lintResult.runs) {
                     $report += "### $file"
