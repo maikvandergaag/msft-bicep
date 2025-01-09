@@ -45,7 +45,7 @@ jobs:
               Write-Output "- Linting $file"
               $sarif = bicep lint $file --diagnostics-format sarif | ConvertFrom-Json
 
-             if($combinedSarif -and $createSarif){
+             if(!$combinedSarif -and $createSarif){
                $combinedSarif = $sarif
                $first = $true
              }
@@ -55,7 +55,7 @@ jobs:
 
                     foreach ($result in $run.results) {
 
-                      if($combinedSarif -and $createSarif -and !$first){
+                      if($createSarif -and !$first){
                         $combinedSarif.runs[0].results += $result
                       }
 
@@ -74,6 +74,7 @@ jobs:
           }
 
           if($combinedSarif -and $createSarif){
+            Write-Output "Creating SARIF file"
             $combinedSarif | ConvertTo-Json -Depth 100 | Out-File -FilePath "bicep-lint.sarif"
           }
           $report >> $env:GITHUB_STEP_SUMMARY
