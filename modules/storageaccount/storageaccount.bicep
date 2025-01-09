@@ -14,10 +14,10 @@ param location string = resourceGroup().location
 @description('The SKU of the storage account')
 param storageSKU string = 'Standard_LRS'
 @allowed([
-  'tst'
-  'acc'
-  'prd'
-  'dev'
+  't'
+  'a'
+  'p'
+  'd'
 ])
 @description('The environment were the service is beign deployed to (tst, acc, prd, dev)')
 param environment string
