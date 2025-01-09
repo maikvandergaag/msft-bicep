@@ -16,7 +16,7 @@ jobs:
         run: |
           $allFiles = $true
           if($allFiles){
-            $files = Get-ChildItem -Path . -Recurse -Include *.bicep,*.bicepparam
+            $files = Get-ChildItem -Path . -Recurse -Include *.bicep,*.bicepparam | Select-Object -ExpandProperty FullName
           }else{
             $files = git diff HEAD~1 --name-only | Where-Object { $_ -like '*.bicep' -or $_ -like '*.bicepparam' }
           }
