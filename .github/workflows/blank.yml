@@ -4,13 +4,16 @@ on:
   push:
   workflow_dispatch:
 
+env:
+  allFiles: ${{ github.event_name != 'pull_request' && true || false }}
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: maikvandergaag/action-biceplint@main
         with:
-          allfiles: false
+          allfiles: ${{ env.allFiles }}
           create-sarif: true
           markdown-report: false
           sarif-output-path: bicep-lint.sarif
