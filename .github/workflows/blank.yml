@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  allFiles: ${{ github.event_name != 'pull_request' && true || false }}
+  allFiles: ${{ github.event_name != 'pull_request' && true || ( github.base_ref == 'main' && true || false) }}
 
 jobs:
   lint:
