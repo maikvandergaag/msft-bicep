@@ -8,7 +8,7 @@ metadata info = {
 @description('The name for the SQL Server database.')
 param name string
 
-@description('The name of the SQL Server.')
+@description('The name of the SQL Server')
 param sqlServerName string
 
 @description('The location for the SQL Server database.')
