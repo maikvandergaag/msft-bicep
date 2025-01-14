@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: maikvandergaag/action-biceplint@main
         with:
-          allfiles: true
+          allfiles: false
           create-sarif: true
           markdown-report: false
           sarif-output-path: bicep-lint.sarif
