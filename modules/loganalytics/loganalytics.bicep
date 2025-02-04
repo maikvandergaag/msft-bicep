@@ -44,7 +44,7 @@ param enableDeleteLock bool = true
 
 var lockName = '${logAnalyticsWorkspace.name}-lock'
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: 'azla-${name}-${environment}'
   location: location
   properties: {

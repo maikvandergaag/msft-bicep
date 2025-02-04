@@ -21,7 +21,7 @@ param purpose string
 param category string
 
 
-resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource rg 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: 'gaag-rg-${name}-${environment}'
   location: location
   tags:{

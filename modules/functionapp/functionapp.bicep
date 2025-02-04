@@ -25,7 +25,7 @@ param appSettings object = {}
 
 var functionname = 'azfunc-${name}-${env}'
 
-resource azhst 'Microsoft.Web/serverfarms@2022-09-01' = {
+resource azhst 'Microsoft.Web/serverfarms@2024-04-01' = {
   name: 'azhst-${name}-${env}'
   location: location
   sku: {
@@ -38,7 +38,7 @@ resource azhst 'Microsoft.Web/serverfarms@2022-09-01' = {
   kind: 'functionapp'
 }
 
-resource functionapp 'Microsoft.Web/sites@2022-09-01' = {
+resource functionapp 'Microsoft.Web/sites@2024-04-01' = {
   name: functionname
   location: location
   kind: 'functionapp'
@@ -61,7 +61,7 @@ resource functionapp 'Microsoft.Web/sites@2022-09-01' = {
   }
 }
 
-resource siteconfig 'Microsoft.Web/sites/config@2022-03-01' = {
+resource siteconfig 'Microsoft.Web/sites/config@2024-04-01' = {
   parent: functionapp
   name: 'appsettings'
   properties: union({
@@ -71,7 +71,7 @@ resource siteconfig 'Microsoft.Web/sites/config@2022-03-01' = {
   }, appSettings)
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: 'azstr${name}${env}'
   location: location
   sku: {

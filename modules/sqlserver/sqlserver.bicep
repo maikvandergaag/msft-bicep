@@ -32,7 +32,7 @@ param groupId string
 @description('Allow access to Azure services (e.g. true, false)')
 param allowAzureServices bool = true
 
-resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' ={
+resource sqlServer 'Microsoft.Sql/servers@2024-05-01-preview' ={
   name: 'azsql-${name}-${environment}'
   location: location
   tags: {
@@ -55,7 +55,7 @@ resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' ={
   }
 }
 
-resource allowAccessToAzureServices 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' = if(allowAzureServices) {
+resource allowAccessToAzureServices 'Microsoft.Sql/servers/firewallRules@2024-05-01-preview' = if(allowAzureServices) {
   name: 'allow-access-to-azure-services'
   parent: sqlServer
   properties: {

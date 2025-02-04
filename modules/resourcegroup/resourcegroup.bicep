@@ -28,7 +28,7 @@ param owner string
 @description('The purpose of the resource group')
 param purpose string
 
-resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource rg 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: 'rg-${name}-${environment}'
   location: location
   tags:{

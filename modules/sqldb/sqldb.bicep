@@ -27,11 +27,11 @@ param environment string
 param tier string = 'Standard'
 
 
-resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' existing = {
+resource sqlServer 'Microsoft.Sql/servers@2024-05-01-preview' existing = {
   name: sqlServerName
 }
 
-resource sqldb 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
+resource sqldb 'Microsoft.Sql/servers/databases@2024-05-01-preview' = {
   parent: sqlServer
   name: 'azsqldb-${name}-${environment}'
   location: location
