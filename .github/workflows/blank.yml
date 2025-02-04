@@ -2,10 +2,11 @@ name: Bicep Linting
 
 on:
   push:
+  pull_request:
   workflow_dispatch:
 
 env:
-  allFiles: ${{ github.event_name != 'pull_request' && true || ( github.base_ref == 'main' && true || false) }}
+  allFiles: ${{ github.event_name != 'pull_request' || ( github.base_ref == 'main') }}
 
 jobs:
   lint:
