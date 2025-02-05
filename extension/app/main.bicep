@@ -6,7 +6,6 @@ param name string
 @description('Specifies the unique name for the client application')
 var clientAppName = 'app-${name}'
 
-
 resource clientApp 'Microsoft.Graph/applications@v1.0' = {
   uniqueName: clientAppName
   displayName: 'Example Client Application'

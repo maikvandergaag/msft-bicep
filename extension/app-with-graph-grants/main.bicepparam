@@ -6,5 +6,7 @@ param appScopes = [
   'profile'
   'User.Read'
   'AdministrativeUnit.Read.All'
+  'Group.ReadWrite.All'
+
 ]
 

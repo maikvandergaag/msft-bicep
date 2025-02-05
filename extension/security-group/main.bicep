@@ -1,5 +1,3 @@
-targetScope = 'tenant'
-
 extension microsoftGraphV1
 
 param users array = []
