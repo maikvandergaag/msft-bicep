@@ -1,0 +1,115 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.1-experimental",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Asserts"
+    ],
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "2864980172315303259"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "AnomolyAlert",
+      "metadata": {
+        "description": "Name of the scheduled action used in the resource ID."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "InsightAlert",
+      "metadata": {
+        "description": "Indicates the kind of scheduled action. Default: InsightAlert."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "defaultValue": "[parameters('name')]",
+      "metadata": {
+        "description": "The display name to show in the portal when viewing the list of scheduled actions. Default: (scheduled action name)."
+      }
+    },
+    "status": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "The status of the scheduled action. Default: Enabled."
+      }
+    },
+    "notificationEmail": {
+      "type": "string",
+      "metadata": {
+        "description": "Email address of the person or team responsible for this scheduled action. This email address will be included in emails. Default: (email address of user deploying the template)."
+      }
+    },
+    "emailRecipients": {
+      "type": "array",
+      "metadata": {
+        "description": "List of email addresses that should receive emails. At least one valid email address is required."
+      }
+    },
+    "emailSubject": {
+      "type": "string",
+      "defaultValue": "",
+      "maxLength": 70,
+      "metadata": {
+        "description": "The subject of the email that will be sent to the email recipients. Default: (view name)."
+      }
+    },
+    "scheduleStartDate": {
+      "type": "string",
+      "defaultValue": "[utcNow('yyyy-MM-ddTHH:00Z')]",
+      "metadata": {
+        "description": "The first day the schedule should run. Use the time to indicate when you want to receive emails. Must be in the format yyyy-MM-ddTHH:miZ. Default = Now."
+      }
+    },
+    "scheduleEndDate": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The last day the schedule should run. Must be in the format yyyy-MM-dd. Default = 1 year from start date."
+      }
+    },
+    "viewId": {
+      "type": "string",
+      "defaultValue": "[format('{0}/providers/Microsoft.CostManagement/views/ms:DailyAnomalyByResourceGroup', subscription().id)]"
+    }
+  },
+  "variables": {
+    "scope": "[subscription().id]"
+  },
+  "resources": {
+    "sa": {
+      "type": "Microsoft.CostManagement/scheduledActions",
+      "apiVersion": "2024-08-01",
+      "name": "[parameters('name')]",
+      "kind": "[parameters('kind')]",
+      "properties": {
+        "scope": "[variables('scope')]",
+        "displayName": "[parameters('displayName')]",
+        "viewId": "[parameters('viewId')]",
+        "notificationEmail": "[parameters('notificationEmail')]",
+        "status": "[parameters('status')]",
+        "notification": {
+          "subject": "[if(and(not(equals(parameters('emailSubject'), null())), not(equals(parameters('emailSubject'), ''))), parameters('emailSubject'), if(and(not(equals(parameters('displayName'), null())), not(equals(parameters('displayName'), ''))), parameters('displayName'), parameters('name')))]",
+          "to": "[parameters('emailRecipients')]"
+        },
+        "schedule": {
+          "frequency": "Daily",
+          "startDate": "[parameters('scheduleStartDate')]",
+          "endDate": "[parameters('scheduleEndDate')]"
+        }
+      }
+    }
+  }
+}

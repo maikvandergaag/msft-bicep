@@ -3,11 +3,11 @@ extension microsoftGraphV1
 param location string = resourceGroup().location
 
 param owners array = []
+param members array = []
 
 param name string = 'default'
 
-@description('Specify the storage blob reader role definition ID')
-param readerRoleDefinitionId string = '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+var readerRole = '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
 
 var roleAssignmentName = guid(resourceGroup().id, groupName, storageName)
 
@@ -18,6 +18,10 @@ var storageName = 'stgraphtest${name}'
 var identityName = 'id-${name}'
 
 resource ownerList 'Microsoft.Graph/users@v1.0' existing = [for upn in owners: {
+  userPrincipalName: upn
+}]
+
+resource memberlist 'Microsoft.Graph/users@v1.0' existing = [for upn in members: {
   userPrincipalName: upn
 }]
 
@@ -40,12 +44,7 @@ resource readerGroup 'Microsoft.Graph/groups@v1.0' = {
   securityEnabled: true
   uniqueName: groupName
   owners: [for i in range(0, length(owners)): ownerList[i].id]
-  members:[webIdentity.properties.principalId]
-}
-
-resource webIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: identityName
-  location: location
+  members: [for i in range(0, length(owners)): memberList[i].id]
 }
 
 resource readersRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -53,6 +52,6 @@ resource readersRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-
   name: roleAssignmentName
   properties: {
     principalId: readerGroup.id
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', readerRoleDefinitionId)
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', readerRole)
   }
 }
