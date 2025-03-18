@@ -8,6 +8,10 @@ on:
 env:
   allFiles: ${{ github.event_name != 'pull_request' || ( github.base_ref == 'main') }}
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest

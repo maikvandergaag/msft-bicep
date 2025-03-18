@@ -28,11 +28,11 @@ inputs:
 runs:
   using: "composite"
   steps:
-       - uses: actions/download-artifact@v2
+       - uses: actions/download-artifact@v4
          name: Download template spec
          with:
              name: ${{inputs.specName}}
-       - uses: actions/download-artifact@v2
+       - uses: actions/download-artifact@v4
          name: Download utility scripts
          with:
              name: ps-${{inputs.specName}}
