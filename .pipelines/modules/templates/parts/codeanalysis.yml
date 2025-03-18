@@ -10,6 +10,10 @@ steps:
   - task: MicrosoftSecurityDevOps@1
     displayName: 'Code Analysis: Microsoft Security DevOps'
   - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'results.sarif'
+      ArtifactName: 'CodeAnalysisLogs'
+  - task: PublishBuildArtifacts@1
     displayName: 'Code Analysis: Publish Artifact'      
     condition: always()
     inputs:
