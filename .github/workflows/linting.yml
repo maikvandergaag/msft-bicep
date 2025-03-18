@@ -12,6 +12,12 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.ID_CLIENT_ID }}
+          tenant-id: ${{ secrets.ID_TENANT_ID }}
+          subscription-id: ${{ secrets.ID_SUBSCRIPTION_ID }}
       - uses: maikvandergaag/action-biceplint@main
         with:
           allfiles: ${{ env.allFiles }}
