@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-@description('The name for the scheduled action. This name is used in the resource ID. Default: AnomolyAlert.')
-param name string = 'AnomolyAlert'
+@description('The name for the scheduled action. This name is used in the resource ID. Default: AnomalyAlert.')
+param name string = 'AnomalyAlert'
 
 @description('The display name to show in the portal when viewing the list of alerts. Default: (scheduled action name).')
 param displayName string = name
@@ -12,13 +12,13 @@ param notificationEmail string
 @description('List of email addresses that should receive emails.')
 param emailRecipients array
 
-@description('The body of the email. Default: Anomoly detected in your subscription. Please review the Cost Management dashboard for more details.')
+@description('The body of the email. Default: Anomaly detected in your subscription. Please review the Cost Management dashboard for more details.')
 @maxLength(250)
-param emailBody string = 'Anomoly detected in your subscription. Please review the Cost Management dashboard for more details.'
+param emailBody string = 'Anomaly detected in your subscription. Please review the Cost Management dashboard for more details.'
 
-@description('The subject of the email. Default: (Anomoly alert: [subscription displayname]).')
+@description('The subject of the email. Default: (Anomaly alert: [subscription displayname]).')
 @maxLength(70)
-param emailSubject string = 'Anomoly alert: ${subscription().displayName}'
+param emailSubject string = 'Anomaly alert: ${subscription().displayName}'
 
 @description('The first day the schedule should run. Default = Now.')
 param scheduleStartDate string = utcNow('yyyy-MM-ddTHH:00Z')

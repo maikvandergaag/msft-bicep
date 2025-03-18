@@ -15,11 +15,11 @@ param appSettings object
 @description('The app existing settings you want to add to the app (key:value)')
 param existingAppSettings object
 
-resource app 'Microsoft.Web/sites@2022-03-01' existing = {
+resource app 'Microsoft.Web/sites@2024-04-01' existing = {
   name: appName
 }
 
-resource siteconfig 'Microsoft.Web/sites/config@2022-03-01' = {
+resource siteconfig 'Microsoft.Web/sites/config@2024-04-01' = {
   parent: app
   name: 'appsettings'
   properties: union(existingAppSettings, appSettings)
