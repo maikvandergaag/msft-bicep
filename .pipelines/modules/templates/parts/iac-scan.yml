@@ -7,19 +7,43 @@ parameters:
     default: 'iacpackage'
 
 steps:
-  - task: RunARMTTKTestsXPlat@1
-    displayName: "IAC: ARM TTK"
+  - task: PowerShell@2
+    displayName: "Lint - Modules"
     inputs:
-      templatelocation: '${{ parameters.iacPath }}'
-      resultLocation: '$(System.DefaultWorkingDirectory)/results'
-      cliOutputResults: true
-  - task: PublishTestResults@2
-    displayName: 'IAC: Publish test results'
-    inputs:
-      testResultsFormat: 'NUnit'
-      failTaskOnFailedTests: true
-      testResultsFiles: '$(System.DefaultWorkingDirectory)/results/*-armttk.xml'
-    condition: 'always()'
+      targetType: "inline"
+      pwsh: true
+      script: |
+      $bicepTemplates = @()
+      $failedLints = @() # Array to hold paths of failed lints
+
+      $bicepTemplates = Get-ChildItem -Path "${{ parameters.iacPath }}" -Recurse -Filter *.bicep | Select-Object FullName -ExpandProperty FullName
+
+      Write-Host "Found $($bicepTemplates.Count) Bicep templates to lint:"
+
+      foreach ($path in $bicepTemplates) {
+        Write-Host "Linting Bicep template $path"
+        $output = az bicep lint --file $path --only-show-errors 2>&1
+
+        if ($LASTEXITCODE -ne 0) {
+          $failedLints += [PSCustomObject]@{
+            Path = $path
+            ErrorMessage = $output
+          }
+        }
+      }
+
+      if ($failedLints.Count -gt 0) {
+        Write-Host "##[error][Failed] Linting failed for the following Bicep templates:"
+        [System.Environment]::NewLine
+        foreach ($failedLint in $failedLints) {
+          Write-Host "Path: $($failedLint.Path)"
+          Write-Host "Error: $($failedLint.ErrorMessage)"
+          [System.Environment]::NewLine
+        }
+        exit 1
+      } else {
+        Write-Host "All Bicep templates passed linting."
+      }
   - task: PublishBuildArtifacts@1
     displayName: 'IAC: Publish IaC Artifact'
     inputs:
