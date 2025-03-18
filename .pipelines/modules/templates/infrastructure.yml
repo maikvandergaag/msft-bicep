@@ -37,15 +37,6 @@ stages:
   - stage: Build
     displayName: Build
     jobs:
-      - job: Analyse_Bicep
-        displayName: Analyse Bicep
-        dependsOn: Build_IaC
-        condition: eq('${{ parameters.analyse }}', true)
-        workspace:
-          clean: all
-        continueOnError: false
-        steps:
-          - template: parts/codeanalysis.yml
       - job: Build_IaC
         displayName: Build / Analyse Modules
         condition: eq('${{ parameters.build }}', true)
