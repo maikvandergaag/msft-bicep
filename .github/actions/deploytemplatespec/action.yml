@@ -1,15 +1,6 @@
 name: "Deploy Template Spec"
 description: "Composite actions for deploying a template spec."
 inputs:
-  clientId:
-    description: 'Application client ID'
-    required: true
-  clientSecret:
-    description: 'Application client Secret'
-    required: true
-  tenantId:
-    description: 'Application tenant Id'
-    required: true
   azureSubscription:
     description: 'Subscription'
     required: true
@@ -36,11 +27,13 @@ runs:
          name: Download utility scripts
          with:
              name: ps-${{inputs.specName}}
-       - name: Azure Login
-         uses: Azure/login@v1
+       - name: Azure login
+         uses: azure/login@v2
          with:
-           creds: '{"clientId":"${{ inputs.clientId }}","clientSecret":"${{ inputs.clientSecret }}","subscriptionId":"${{ inputs.azureSubscription }}","tenantId":"${{ inputs.tenantId }}"}'
-           enable-AzPSSession: true
+          client-id: ${{ secrets.ID_CLIENT_ID }}
+          tenant-id: ${{ secrets.ID_TENANT_ID }}
+          subscription-id: ${{ secrets.ID_SUBSCRIPTION_ID }}
+         enable-AzPSSession: true
        - name: Check versionnumber
          uses: azure/powershell@v1
          id: calculate
