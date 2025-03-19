@@ -145,7 +145,7 @@ PROCESS {
                 $StringBuilderResource += $resourceHeader
                 $StringBuilderResource += $resourceHeaderDivider
 
-                $StringBuilderResource += $templateObject.resources | ForEach-Object { $resourceRow -f $_.Name, $_.Type }
+                $StringBuilderResource += ($templateObject.resources | Get-Member -MemberType NoteProperty | Select-Object Name) | ForEach-Object { $resourceRow -f $templateObject.resources.$($_.Name).Name, $templateObject.resources.$($_.Name).Type } 
                 $StringBuilderResource | Out-File -FilePath $outputFile -Append
 
 
