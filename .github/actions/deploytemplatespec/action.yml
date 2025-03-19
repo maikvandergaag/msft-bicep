@@ -1,6 +1,12 @@
 name: "Deploy Template Spec"
 description: "Composite actions for deploying a template spec."
 inputs:
+  clientId:
+    description: 'Application client ID'
+    required: true
+  tenantId:
+    description: 'Application tenant Id'
+    required: true
   azureSubscription:
     description: 'Subscription'
     required: true
@@ -30,10 +36,10 @@ runs:
        - name: Azure login
          uses: azure/login@v2
          with:
-          client-id: ${{ secrets.ID_CLIENT_ID }}
-          tenant-id: ${{ secrets.ID_TENANT_ID }}
-          subscription-id: ${{ secrets.ID_SUBSCRIPTION_ID }}
-         enable-AzPSSession: true
+          client-id: ${{ inputs.clientId }}
+          tenant-id: ${{ inputs.tenantId }}
+          subscription-id: ${{ inputs.azureSubscription }}
+          enable-AzPSSession: true
        - name: Check versionnumber
          uses: azure/powershell@v1
          id: calculate
