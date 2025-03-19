@@ -1,10 +1,10 @@
-name: TS - Certified Storage
+name: Certified Storage
 
 on:
   push:
     paths:
-      - 'templatespecs/certifiedstorage/*'
-      - .github/workflows/*
+      - templatespecs/certifiedstorage/*
+      - .github/workflows/certifiedstorage.yml
     branches: [ main ]
   pull_request:
     branches: [ main ]
