@@ -18,6 +18,10 @@ env:
   specfilename: certifiedstorage.json
   resourcegroup: gaag-rg-iac-prd
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
